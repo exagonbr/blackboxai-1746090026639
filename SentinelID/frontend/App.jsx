@@ -37,7 +37,8 @@ function Login({ onLogin }) {
       }
       const data = await response.json();
       localStorage.setItem('access_token', data.access_token);
-      onLogin();
+      // Redirect to dashboard after login
+      window.location.href = 'dashboard.html';
     } catch (err) {
       setError('Network error');
     }
@@ -215,9 +216,9 @@ function Dashboard() {
 }
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [loggedIn, setLoggedIn] = React.useState(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const token = localStorage.getItem('access_token');
     setLoggedIn(!!token);
   }, []);
