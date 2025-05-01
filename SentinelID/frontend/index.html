@@ -1,0 +1,121 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>SENTINELID Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18.0.0/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18.0.0/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"></link>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+      body {
+        background-color: #0B1621;
+      }
+      html, body, #root {
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body style="font-family: 'Inter', sans-serif;">
+    <div id="root"></div>
+    <script type="text/babel">
+
+      function ShieldLogo({className = 'w-10 h-10'}) {
+        return (
+          <svg className={className} fill="none" viewBox="0 0 48 48">
+            <path d="M24 7l15 5v8.2c0 10.53-6.44 16.67-14.19 20.17a2 2 0 0 1-1.62 0C15.44 36.87 9 30.73 9 20.2V12L24 7z"
+              stroke="#00B6FF" strokeWidth="2.5" />
+            <ellipse cx="24" cy="23.5" rx="7" ry="5.5" stroke="#00B6FF" strokeWidth="2" />
+            <circle cx="24" cy="23.5" r="2.75" fill="#00B6FF"/>
+          </svg>
+        )
+      }
+
+      function App() {
+        return (
+          <div className="min-h-screen flex items-center justify-center bg-[#0B1621] text-white" style={{ fontFamily: 'Inter, sans-serif' }}>
+            <div className="flex gap-10 xl:gap-24 w-full max-w-6xl mx-auto">
+              {/* Left side */}
+              <div className="flex-1 rounded-2xl bg-gradient-to-br from-[#0B1621] to-[#111926] p-10 relative flex flex-col justify-between shadow-lg border border-[#131f2e]/60 min-h-[620px] overflow-hidden">
+                {/* Navbar */}
+                <div className="flex items-center justify-between mb-12">
+                  <div className="flex items-center space-x-3">
+                    <ShieldLogo className="w-10 h-10" />
+                    <span className="text-xl font-bold tracking-wide">SENTINELID</span>
+                  </div>
+                  <div className="flex space-x-8 text-base font-medium">
+                    <a href="#" className="hover:text-[#00b6ff]">Solução</a>
+                    <a href="#" className="hover:text-[#00b6ff]">Como Funciona</a>
+                    <a href="#" className="hover:text-[#00b6ff]">Preços</a>
+                    <a href="#" className="hover:text-[#00b6ff]">Sobre</a>
+                  </div>
+                </div>
+                {/* Main content */}
+                <div className="flex-1 flex flex-col justify-center z-10 relative">
+                  <h1 className="text-[48px] leading-[1.05] font-bold mb-6 text-white w-full max-w-[520px]">
+                    Proteja seu<br/>negócio com<br/>Inteligência<br/>Facial.
+                  </h1>
+                  <p className="text-lg text-[#c2d0e8] max-w-lg mb-8 font-normal">
+                    A nova geração de segurança baseada em reconhecimento facial de alta precisão.
+                  </p>
+                  <div className="flex gap-4 mt-2">
+                    <button className="px-7 py-3 rounded-lg bg-[#11b9ff] text-white text-lg font-medium shadow-lg hover:bg-[#09a2db] transition">
+                      Têste Grátis 30 Dias
+                    </button>
+                    <button className="px-7 py-3 rounded-lg border border-[#586372] bg-[#171e25] text-white text-lg font-medium hover:bg-[#262f39] transition">
+                      Agendar Demonstração
+                    </button>
+                  </div>
+                </div>
+                {/* Background image */}
+                <img 
+                  src="https://images.pexels.com/photos/1138903/pexels-photo-1138903.jpeg?auto=compress&w=900&q=60"
+                  alt="Businessman in dark suit standing in confident pose, corporate office mood, out of focus background, business setting"
+                  className="absolute inset-0 w-full h-full object-cover opacity-40 pointer-events-none rounded-2xl"
+                  style={{zIndex: 0, objectPosition: 'center'}}
+                />
+              </div>
+              {/* Right side */}
+              <div className="flex flex-col justify-center w-full max-w-md rounded-2xl bg-gradient-to-br from-[#0A121B] to-[#101D2C] p-12 shadow-lg border border-[#131f2e]/60">
+                <div className="flex flex-col items-center mb-10">
+                  <ShieldLogo className="w-16 h-16 mb-2" />
+                  <span className="font-bold text-2xl tracking-[.15em] mb-2 mt-1">SENTINELID</span>
+                  <p className="text-base text-[#d1dbe6] text-center font-normal">
+                    Acesse sua plataforma de<br/>segurança facial
+                  </p>
+                </div>
+                <form className="flex flex-col gap-5">
+                  <div className="flex flex-col gap-1">
+                    <label htmlFor="usuario" className="text-base text-[#c2d0e8]">Usuário</label>
+                    <input
+                      id="usuario"
+                      type="text"
+                      autoComplete="username"
+                      className="bg-transparent border border-[#293242] rounded-lg px-4 py-3 text-white text-lg focus:outline-none focus:ring-2 focus:ring-[#10bcff] transition"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label htmlFor="senha" className="text-base text-[#c2d0e8]">Senha</label>
+                    <input
+                      id="senha"
+                      type="password"
+                      autoComplete="current-password"
+                      className="bg-transparent border border-[#293242] rounded-lg px-4 py-3 text-white text-lg focus:outline-none focus:ring-2 focus:ring-[#10bcff] transition"
+                    />
+                    <a href="#" className="text-right text-[#899cb1] hover:text-[#10bcff] text-[15px] mt-1">Esqueceu sua senha!</a>
+                  </div>
+                  <button className="mt-3 px-6 py-3 rounded-lg bg-[#11b9ff] text-white text-lg font-bold hover:bg-[#09a2db] transition">
+                    Entrar
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+  </body>
+</html>
