@@ -1,12 +1,25 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request, HTTPException, Depends
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from passlib.context import CryptContext
 import cv2
 import asyncio
 import os
 from deepface import DeepFace
 import numpy as np
 import uuid
+
+from .models import Base, User, Alert
+
+DATABASE_URL = "sqlite:///./sentinelid.db"
+
+engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 app = FastAPI()
 
@@ -16,16 +29,22 @@ DEEPFACE_ENV = os.getenv("DEEPFACE_ENV", "default")
 # Dictionary to hold connected websocket clients
 clients = []
 
-# Simple in-memory user store and token store for demo purposes
-users_db = {
-    "admin": "password123"
-}
-tokens_db = {}
+def get_password_hash(password):
+    return pwd_context.hash(password)
 
-def authenticate_user(username: str, password: str):
-    if username in users_db and users_db[username] == password:
-        return True
-    return False
+def verify_password(plain_password, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
+
+def get_user(db: Session, username: str):
+    return db.query(User).filter(User.username == username).first()
+
+def authenticate_user(db: Session, username: str, password: str):
+    user = get_user(db, username)
+    if not user:
+        return False
+    if not verify_password(password, user.hashed_password):
+        return False
+    return user
 
 def create_token():
     return str(uuid.uuid4())
@@ -35,11 +54,29 @@ def get_current_user(token: str = None):
         return True
     raise HTTPException(status_code=401, detail="Invalid or missing token")
 
+@app.on_event("startup")
+def startup():
+    Base.metadata.create_all(bind=engine)
+    db = SessionLocal()
+    master_user = db.query(User).filter(User.is_master == True).first()
+    if not master_user:
+        master_user = User(
+            username="admin",
+            hashed_password=get_password_hash("password123"),
+            is_master=True
+        )
+        db.add(master_user)
+        db.commit()
+    db.close()
+
 @app.post("/login")
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    db = SessionLocal()
     username = form_data.username
     password = form_data.password
-    if not authenticate_user(username, password):
+    user = authenticate_user(db, username, password)
+    db.close()
+    if not user:
         return JSONResponse(status_code=400, content={"detail": "Incorrect username or password"})
     token = create_token()
     tokens_db[username] = token
@@ -58,6 +95,15 @@ async def get():
     </html>
     """
     return HTMLResponse(content=html_content)
+
+@app.get("/alerts")
+async def get_alerts(token: str = None):
+    if token is None or token not in tokens_db.values():
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    db = SessionLocal()
+    alerts = db.query(Alert).order_by(Alert.timestamp.desc()).all()
+    db.close()
+    return alerts
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket, token: str = None):
